@@ -13,7 +13,12 @@ Opensource Discord bot, inspired by Paimon from Genshin Impact.
 
 ### Installation
 
-Coming soon.
+- Dependencies
+  - Python 3
+  - Modules
+    - discord.py
+    - python-dotenv
+
 
 ### Updating
 
