@@ -25,6 +25,11 @@ class Travelers(commands.Cog):
     # Create Traveler profile.
     @commands.command()
     async def appear(self, ctx):
+
+        # Connect to database
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        connection.close()
         await ctx.send("pong!")
 
 

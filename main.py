@@ -53,8 +53,8 @@ async def reload(ctx, extension):
 @commands.is_owner()
 async def update(ctx, extension):
     for file in os.listdir(f"{BOT_LOCATION}cogs"):
-        bot.unload_extension(file[:-3])
-        bot.load_extension(file[:-3])
+        bot.unload_extension(f"cogs.{file[:-3]}")
+        bot.load_extension(f"cogs.{file[:-3]}")
         print(f"{current_time()} - Reloaded extension: {extension}")
 
 
@@ -67,6 +67,8 @@ async def on_ready():
 
 
 # Startup
+
+# Print logo
 print("=========================================")
 print("GGGGG EEEEE N   N SSSSS H   H IIIII N   N")
 print("G     E     NN  N S     H   H   I   NN  N")
