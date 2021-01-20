@@ -73,7 +73,7 @@ print("G     E     NN  N S     H   H I NN  N")
 print("G  GG EEEEE N N N SSSSS HHHHH I N N N")
 print("G   G E     N  NN     S H   H I N  NN")
 print("GGGGG EEEEE N   N SSSSS H   H I N   N")
-print("=====Created with love by meesvw=====\n")
+print("===github.com/meesvw/GenshinBot.p====\n")
 print(f"{current_time()} - Starting bot.")
 
 # Check if .env exists
@@ -83,7 +83,7 @@ if os.path.exists(f"{BOT_LOCATION}.env"):
         quit()
 else:
     with open(f"{BOT_LOCATION}.env", "w") as file:
-        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=pm!")
+        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=gi!")
         print(f"{current_time()} - Created .env file.")
     print(f"{current_time()} - Please configure the .env file before starting.")
     quit()
@@ -92,7 +92,8 @@ else:
 for file in os.listdir(f"{BOT_LOCATION}cogs"):
     if file.endswith(".py"):
         try:
-            bot.load_extension(file[:-3])
+            bot.load_extension(f"cogs.{file[:-3]}")
+            print(f"{current_time()} - Loaded extension: {file[:-3]}")
         except:
             print(f"{current_time()} - Error occured loading: {file[:-3]}")
 
