@@ -73,7 +73,7 @@ print("G     E     NN  N S     H   H I NN  N")
 print("G  GG EEEEE N N N SSSSS HHHHH I N N N")
 print("G   G E     N  NN     S H   H I N  NN")
 print("GGGGG EEEEE N   N SSSSS H   H I N   N")
-print("===github.com/meesvw/GenshinBot.p====\n")
+print("===github.com/meesvw/GenshinBot.py===\n")
 print(f"{current_time()} - Starting bot.")
 
 # Check if .env exists
