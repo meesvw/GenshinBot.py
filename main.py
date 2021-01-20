@@ -79,7 +79,7 @@ print(f"{current_time()} - Starting bot.")
 # Check if .env exists
 if not os.path.exists(f"{BOT_LOCATION}.env"):
     with open(f"{BOT_LOCATION}.env", "w") as file:
-        file.write("test")
+        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=pm!")
     print(f"{current_time()} - Created .env file. Please configure before starting.")
     quit()
 
