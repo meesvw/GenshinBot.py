@@ -7,6 +7,15 @@ from discord.ext import commands
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
 USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/users.db"
 
+# Check if database exists
+connection = sqlite3.connect(USERS_DATABASE)
+cursor = connection.cursor()
+cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+user_id INTEGER PRIMARY KEY
+)""")
+connection.commit()
+connection.close()
+
 
 # Functions
 
@@ -27,9 +36,6 @@ class Travelers(commands.Cog):
     async def appear(self, ctx):
 
         # Connect to database
-        connection = sqlite3.connect(USERS_DATABASE)
-        cursor = connection.cursor()
-        connection.close()
         await ctx.send("pong!")
 
 
