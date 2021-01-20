@@ -1,4 +1,4 @@
-# PaimonBot.py
+# GenshinBot.py
 Opensource Discord bot, inspired by Paimon from Genshin Impact.
 
 ## Documentation
