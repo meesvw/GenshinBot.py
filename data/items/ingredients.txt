@@ -1,0 +1,9 @@
+{
+'Almond':{'sources':['shop'], 'shops':{'Second Life':120, 'Ms. Bai':150}},
+'Bacon':{'sources':['shop', 'processing'], 'shops':{'Good Hunter':720}, 'crafting':{'Raw Meat':2, 'Salt':2}},
+'Bamboo Shoot':{'sources':['wild', 'shop'], 'wild':['Qingce Village'], 'shops':{'Wanmin Restaurant':240}},
+'Berry':{'sources':['wild'], 'wild':['everywhere']},
+'Bird Egg':{'sources':['wild', 'shop'], 'wild':['everywhere'], 'shops':{'Draff':200}},
+'Butter':{'sources':['shop' ,'processing'], 'shops':{'Good Hunter':270}, 'crafting':{'Milk':2}},
+'Cabbage':{'sources':['wild', 'shop'], 'wild':['everywhere'], 'shops':{'Second Life':120, 'Mondstadt General Goods':120}}
+}

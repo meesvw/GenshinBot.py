@@ -22,7 +22,8 @@ def create_user(user_id):
     try:
         connection = sqlite3.connect(USERS_DATABASE)
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO users VALUES (:user_id)", {"user_id": user_id})
+        cursor.execute("INSERT INTO users VALUES (:user_id, :location, :status)",
+                       {"user_id": user_id, "location": "mondstadt", "status": "new"})
         connection.commit()
         connection.close()
         return "You're now a Traveler!"
@@ -36,14 +37,14 @@ try:
     cursor = connection.cursor()
     cursor.execute("""CREATE TABLE users (
     user_id INTEGER PRIMARY KEY,
-    location text
+    location text,
+    status text
     )""")
-    print(f"{current_time()} - No table found creating.")
     connection.commit()
     connection.close()
-    print(f"{current_time()} - Table has been created.")
+    print(f"{current_time()} - Database has been created.")
 except sqlite3.OperationalError:
-    print(f"{current_time()} - Table already exists skipping creation.")
+    print(f"{current_time()} - Database already exists.")
 
 
 # Create Travelers class
