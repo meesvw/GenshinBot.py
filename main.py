@@ -66,6 +66,17 @@ async def on_ready():
     print(f"{current_time()} - {bot.user.name} connected to a shard.")
 
 
+# Bot error handler
+@bot.event
+async def on_command_error(ctx, error):
+    # Error handler command not found
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        return False
+
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        return await ctx.send(error)
+
+
 # Startup
 
 # Print logo
