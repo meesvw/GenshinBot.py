@@ -4,11 +4,12 @@ from datetime import datetime
 from discord.ext import commands
 from dotenv import load_dotenv
 
+
 # Vars
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 BOT_PREFIX = os.getenv("BOT_PREFIX")
-BOT_LOCATION = os.getenv("BOT_LOCATION")
+BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
 bot = commands.AutoShardedBot(command_prefix=BOT_PREFIX, case_insensitive=True)
 
 
@@ -64,6 +65,23 @@ async def update(ctx, extension):
 async def on_ready():
     print(f"{current_time()} - {bot.user.name} connected to a shard.")
 
+
+# Startup
+print("=====================================")
+print("GGGGG EEEEE N   N SSSSS H   H I N   N")
+print("G     E     NN  N S     H   H I NN  N")
+print("G  GG EEEEE N N N SSSSS HHHHH I N N N")
+print("G   G E     N  NN     S H   H I N  NN")
+print("GGGGG EEEEE N   N SSSSS H   H I N   N")
+print("=====Created with love by meesvw=====\n")
+print(f"{current_time()} - Starting bot.")
+
+# Check if .env exists
+if not os.path.exists(f"{BOT_LOCATION}.env"):
+    with open(f"{BOT_LOCATION}.env", "w") as file:
+        file.write("test")
+    print(f"{current_time()} - Created .env file. Please configure before starting.")
+    quit()
 
 # Load cogs
 for file in os.listdir(f"{BOT_LOCATION}cogs"):
