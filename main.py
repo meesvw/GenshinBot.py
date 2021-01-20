@@ -24,6 +24,7 @@ def current_time():
 
 # Load specific cog
 @bot.command()
+@commands.is_owner()
 async def load(ctx, extension):
     bot.load_extension(f"cogs.{extension}")
     print(f"{current_time()} - Loaded extension: {extension}")
@@ -31,9 +32,29 @@ async def load(ctx, extension):
 
 # Unload specific cog
 @bot.command()
+@commands.is_owner()
 async def unload(ctx, extension):
     bot.unload_extension(f"cogs.{extension}")
     print(f"{current_time()} - Unloaded extension: {extension}")
+
+
+# Reload specific cog
+@bot.command()
+@commands.is_owner()
+async def reload(ctx, extension):
+    bot.unload_extension(f"cogs.{extension}")
+    bot.load_extension(f"cogs.{extension}")
+    print(f"{current_time()} - Reloaded extension: {extension}")
+
+
+# Update all cogs
+@bot.command()
+@commands.is_owner()
+async def update(ctx, extension):
+    for file in os.listdir(f"{BOT_LOCATION}cogs"):
+        bot.unload_extension(file[:-3])
+        bot.load_extension(file[:-3])
+        print(f"{current_time()} - Reloaded extension: {extension}")
 
 
 # Bot events
