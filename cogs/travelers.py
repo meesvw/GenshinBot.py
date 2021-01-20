@@ -5,7 +5,7 @@ from discord.ext import commands
 
 # vars
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
-USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/users.db"
+USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/genshin.db"
 
 # Check if database exists
 connection = sqlite3.connect(USERS_DATABASE)
@@ -21,8 +21,15 @@ connection.close()
 
 # Create user dict
 def create_user(user_id):
-    user_dict = {}
-    return user_dict
+    try:
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO users VALUES (:user_id)", {"user_id": user_id})
+        connection.commit()
+        connection.close()
+        return "You're now a Traveler!"
+    except sqlite3.IntegrityError:
+        return "You're already a Traveler!"
 
 
 # Create Travelers class
@@ -35,8 +42,9 @@ class Travelers(commands.Cog):
     @commands.command()
     async def appear(self, ctx):
 
-        # Connect to database
-        await ctx.send("pong!")
+        # Create user in database
+        output = create_user(ctx.author.id)
+        await ctx.send(output)
 
 
 # Setup cog
