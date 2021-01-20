@@ -77,10 +77,15 @@ print("=====Created with love by meesvw=====\n")
 print(f"{current_time()} - Starting bot.")
 
 # Check if .env exists
-if not os.path.exists(f"{BOT_LOCATION}.env"):
+if os.path.exists(f"{BOT_LOCATION}.env"):
+    if BOT_TOKEN == "YourBotToken":
+        print(f"{current_time()} - Please configure the .env file before starting.")
+        quit()
+else:
     with open(f"{BOT_LOCATION}.env", "w") as file:
         file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=pm!")
-    print(f"{current_time()} - Created .env file. Please configure before starting.")
+        print(f"{current_time()} - Created .env file.")
+    print(f"{current_time()} - Please configure the .env file before starting.")
     quit()
 
 # Load cogs
