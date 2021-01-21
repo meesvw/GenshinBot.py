@@ -51,11 +51,15 @@ async def reload(ctx, extension):
 # Update all cogs
 @bot.command()
 @commands.is_owner()
-async def update(ctx, extension):
+async def update(ctx):
     for file in os.listdir(f"{BOT_LOCATION}cogs"):
-        bot.unload_extension(f"cogs.{file[:-3]}")
-        bot.load_extension(f"cogs.{file[:-3]}")
-        print(f"{current_time()} - Reloaded extension: {extension}")
+        if file.endswith(".py"):
+            try:
+                bot.unload_extension(f"cogs.{file[:-3]}")
+                bot.load_extension(f"cogs.{file[:-3]}")
+                print(f"{current_time()} - Updated extension: {file[:-3]}")
+            except:
+                print(f"{current_time()} - Error updating extension: {file[:-3]}")
 
 
 # Bot events
