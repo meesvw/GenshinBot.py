@@ -65,7 +65,7 @@ sudo nano start.sh
 
 Put this into the file:
 ```
-#!/bin/sh
+#!/bin/bash
 screen -S GenshinBot.py python3 main.py
 ```
 
