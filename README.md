@@ -17,6 +17,7 @@
   - Discord Bot Token **[Guide](https://discordpy.readthedocs.io/en/latest/discord.html)**
   - Python 3.5.3 (or higher) **[Download](https://www.python.org/downloads/)**
   - Python modules
+    - dblpy **[Docs](https://pypi.org/project/dblpy/)**
     - discord.py **[Docs](https://discordpy.readthedocs.io/en/latest/intro.html)**
     - python-dotenv **[Docs](https://pypi.org/project/python-dotenv/)**
 
@@ -31,6 +32,7 @@ After you have installed the requirements you need to install the modules:
 ```
 sudo pip3 install discord.py
 sudo pip3 install python-dotenv
+sudo pip3 install dblpy
 ```
 
 Now you will need to get the files for the bot:
@@ -52,6 +54,8 @@ Example:
 ```
 BOT_TOKEN=YourBotToken
 BOT_PREFIX=gi!
+DBL_ENABLED=False
+DBL_TOKEN=YourDBLToken
 ```
 
 #### Running bot in the background
