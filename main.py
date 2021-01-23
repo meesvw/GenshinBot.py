@@ -10,6 +10,8 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 BOT_PREFIX = os.getenv("BOT_PREFIX")
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
+DBL_ENABLED = os.getenv("DBL_ENABLED")
+DBL_TOKEN = os.getenv("DBL_TOKEN")
 bot = commands.AutoShardedBot(command_prefix=BOT_PREFIX, case_insensitive=True)
 
 
@@ -98,16 +100,20 @@ if os.path.exists(f"{BOT_LOCATION}.env"):
     if BOT_TOKEN == "YourBotToken":
         print(f"{current_time()} - Please configure the .env file before starting.")
         quit()
+    if DBL_TOKEN == "YourDBLToken" and DBL_ENABLED == "True":
+        print(f"{current_time()} - Warning TopGG has not been configured.")
 else:
     with open(f"{BOT_LOCATION}.env", "w") as file:
-        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=gi!")
+        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=gi!\nDBL_ENABLED=False\nDBL_TOKEN=YourDBLToken")
         print(f"{current_time()} - Created .env file.")
     print(f"{current_time()} - Please configure the .env file before starting.")
     quit()
 
 # Load cogs
 for file in os.listdir(f"{BOT_LOCATION}cogs"):
-    if file.endswith(".py"):
+    if file == "topgg.py" and DBL_ENABLED == "False":
+        pass
+    elif file.endswith(".py"):
         try:
             bot.load_extension(f"cogs.{file[:-3]}")
             print(f"{current_time()} - Loaded extension: {file[:-3]}")
