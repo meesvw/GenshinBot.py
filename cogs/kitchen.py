@@ -21,5 +21,6 @@ class Kitchen(commands.Cog):
         await ctx.send("Pong!")
 
 
+# Setup cog
 def setup(bot):
     bot.add_cog(Kitchen(bot))
