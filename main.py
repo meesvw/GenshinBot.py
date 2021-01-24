@@ -1,5 +1,6 @@
 import discord
 import os
+import sqlite3
 from datetime import datetime
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -10,6 +11,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 BOT_PREFIX = os.getenv("BOT_PREFIX")
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
+USERS_DATABASE = f"{BOT_LOCATION}data/genshin.db"
 DBL_ENABLED = os.getenv("DBL_ENABLED")
 DBL_TOKEN = os.getenv("DBL_TOKEN")
 bot = commands.AutoShardedBot(command_prefix=BOT_PREFIX, case_insensitive=True)
@@ -113,6 +115,21 @@ else:
         print(f"{current_time()} - Created .env file.")
     print(f"{current_time()} - Please configure the .env file before starting.")
     quit()
+
+# Check if database exists
+try:
+    connection = sqlite3.connect(USERS_DATABASE)
+    cursor = connection.cursor()
+    cursor.execute("""CREATE TABLE users (
+    user_id INTEGER PRIMARY KEY,
+    user_dict text,
+    status text
+    )""")
+    connection.commit()
+    connection.close()
+    print(f"{current_time()} - Database has been created.")
+except sqlite3.OperationalError:
+    print(f"{current_time()} - Database found skipping creation.")
 
 # Load cogs
 for file in os.listdir(f"{BOT_LOCATION}cogs"):

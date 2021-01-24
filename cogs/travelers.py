@@ -53,22 +53,6 @@ def get_user_dict(user_id):
         return "error"
 
 
-# Check if database exists
-try:
-    connection = sqlite3.connect(USERS_DATABASE)
-    cursor = connection.cursor()
-    cursor.execute("""CREATE TABLE users (
-    user_id INTEGER PRIMARY KEY,
-    user_dict text,
-    status text
-    )""")
-    connection.commit()
-    connection.close()
-    print(f"{current_time()} - Database has been created.")
-except sqlite3.OperationalError:
-    print(f"{current_time()} - Database found skipping creation.")
-
-
 # Create Travelers class
 class Travelers(commands.Cog):
 
