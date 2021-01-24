@@ -61,14 +61,18 @@ async def reload(ctx, extension):
 @bot.command()
 @commands.is_owner()
 async def update(ctx):
+    error_amount = 0
     for file in os.listdir(f"{BOT_LOCATION}cogs"):
-        if file.endswith(".py"):
+        if file == "topgg.py" and DBL_ENABLED == "False":
+            pass
+        elif file.endswith(".py"):
             try:
                 bot.unload_extension(f"cogs.{file[:-3]}")
                 bot.load_extension(f"cogs.{file[:-3]}")
-                print(f"{current_time()} - Updated extension: {file[:-3]}")
             except:
+                error_amount += 1
                 print(f"{current_time()} - Error updating extension: {file[:-3]}")
+    print(f"{current_time()} - Updated extensions errors: {error_amount}.")
 
 
 # Bot events
