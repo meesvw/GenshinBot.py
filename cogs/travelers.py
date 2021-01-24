@@ -7,7 +7,7 @@ from discord.ext import commands
 
 # vars
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
-USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/genshin.db"
+USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/Database/genshin.db"
 
 
 # Functions

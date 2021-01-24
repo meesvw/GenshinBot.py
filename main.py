@@ -11,7 +11,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 BOT_PREFIX = os.getenv("BOT_PREFIX")
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
-USERS_DATABASE = f"{BOT_LOCATION}data/genshin.db"
+USERS_DATABASE = f"{BOT_LOCATION}data/Database/genshin.db"
 DBL_ENABLED = os.getenv("DBL_ENABLED")
 DBL_TOKEN = os.getenv("DBL_TOKEN")
 bot = commands.AutoShardedBot(command_prefix=BOT_PREFIX, case_insensitive=True)
