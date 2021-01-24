@@ -66,7 +66,7 @@ try:
     connection.close()
     print(f"{current_time()} - Database has been created.")
 except sqlite3.OperationalError:
-    print(f"{current_time()} - Database already exists.")
+    print(f"{current_time()} - Database found skipping creation.")
 
 
 # Create Travelers class
@@ -102,11 +102,11 @@ class Travelers(commands.Cog):
             embed = discord.Embed(
                 description="Below you can see your inventory. "
                             "Here you can see your ingredients, materials, stats and currency. ",
-                color=discord.Colour.blurple()
+                color=discord.Colour.purple()
             )
         else:
             embed = discord.Embed(
-                color=discord.Colour.blurple()
+                color=discord.Colour.purple()
             )
 
         embed.add_field(

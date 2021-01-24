@@ -23,6 +23,11 @@ def current_time():
     return now.strftime("%d/%m/%Y %H:%M:%S")
 
 
+# Set Bot status
+async def set_status():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f"Teyvat | {BOT_PREFIX}help"))
+
+
 # Bot commands
 
 # Load specific cog
@@ -69,6 +74,7 @@ async def update(ctx):
 # Print message when bot connects to a shard
 @bot.event
 async def on_ready():
+    await set_status()
     print(f"{current_time()} - {bot.user.name} connected to a shard.")
 
 
@@ -89,11 +95,10 @@ async def on_command_error(ctx, error):
 print("=========================================")
 print("GGGGG EEEEE N   N SSSSS H   H IIIII N   N")
 print("G     E     NN  N S     H   H   I   NN  N")
-print("G  GG EEEEE N N N SSSSS HHHHH   I   N N N")
+print("G GGG EEEEE N N N SSSSS HHHHH   I   N N N")
 print("G   G E     N  NN     S H   H   I   N  NN")
 print("GGGGG EEEEE N   N SSSSS H   H IIIII N   N")
 print("==== github.com/meesvw/GenshinBot.py ====\n")
-print(f"{current_time()} - Starting bot.")
 
 # Check if .env exists
 if os.path.exists(f"{BOT_LOCATION}.env"):
