@@ -6,10 +6,10 @@
 ### Important
 
 - **Problems with installing**
-  - I try to make the installation and maintenance as easy as possible. That said it will not always be perfect. If you experience any issues join the [Discord Server].
+  - I try to make the installation and maintenance as easy as possible. That said it will not always be perfect. If you experience any issues join the **[Discord Server](https://discord.gg/8GMKZTT22n)**.
 
 - **Bugs**
-  - If you find any bugs please make a ticket in the [Discord Server].
+  - If you find any bugs please make a ticket in the **[Discord Server](https://discord.gg/8GMKZTT22n)**.
 
 ### Installation
 

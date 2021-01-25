@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 .idea/
 data/genshin.db
-!/data/Database/genshin.db
+data/Database/genshin.db

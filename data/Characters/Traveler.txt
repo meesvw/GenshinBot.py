@@ -1,0 +1,32 @@
+{
+    "Rarity": 5,
+    "Weapon Class": "Sword",
+    "Element": "Adaptive",
+    "Weapon": "Dull Blade",
+    "Location": "Mondstadt",
+    "Thumbnail Link": "https://static.wikia.nocookie.net/gensin-impact/images/1/1c/Traveler_Male_Card.jpg/revision/latest/scale-to-width-down/281?cb=20201024043323",
+
+    "Artifacts": {
+        "Flower": "Empty",
+        "Plume": "Empty",
+        "Watch": "Empty",
+        "Bottle": "Empty",
+        "Hat": "Empty"
+    },
+
+    "Stats": {
+        1: {
+            "HP": 912,
+            "ATK1": 18,
+            "DEF": 57,
+            "ATK2": 0
+        },
+        2: {
+            "HP": 912,
+            "ATK1": 18,
+            "DEF": 57,
+            "ATK2": 0
+        }
+    }
+}
+

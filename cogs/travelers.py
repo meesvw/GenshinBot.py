@@ -19,38 +19,139 @@ def current_time():
 
 
 # Create user dict
-def create_user(user_id):
-    user_dict = {
-        "level": "1",
-        "currency": {"Mora": 0, "Primogems": 0},
-        "Ingredients": {},
-        "Materials": {},
-        "Food": {}
-    }
-
-    try:
-        connection = sqlite3.connect(USERS_DATABASE)
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO users VALUES (:user_id, :user_dict, :status)",
-                       {"user_id": user_id, "user_dict": f"{user_dict}", "status": "new"})
-        connection.commit()
-        connection.close()
-        return "You're now a Traveler!"
-    except sqlite3.IntegrityError:
-        return "You're already a Traveler!"
-
-
-# Get user dict from database
-def get_user_dict(user_id):
+async def create_user(user_id):
     try:
         connection = sqlite3.connect(USERS_DATABASE)
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
-        user_dict = cursor.fetchall()[0]
-        connection.close()
-        return user_dict
+        output = cursor.fetchall()
+        if output:
+            connection.close()
+            return "User exists"
+        else:
+            with open(f"{BOT_LOCATION[:-5]}data/Database/Basic User.txt", "r") as file:
+                user_data = file.read()
+                user_dict = ast.literal_eval(user_data)
+
+            with open(f"{BOT_LOCATION[:-5]}data/Characters/Traveler.txt", "r") as file:
+                character_data = file.read()
+                character_dict = ast.literal_eval(character_data)
+
+            user_dict["Characters"]["Traveler"] = {
+                "Artifacts": character_dict["Artifacts"],
+                "Weapon": character_dict["Weapon"],
+                "Level": 1
+            }
+
+            cursor.execute("INSERT INTO users VALUES (:user_id, :user_dict, :status)",
+                           {"user_id": user_id, "user_dict": f"{user_dict}", "status": "new"})
+            connection.commit()
+            connection.close()
+            print(f"{current_time()} - User created with ID: {user_id}")
+            return "User created"
     except:
-        return "error"
+        return "Error"
+
+
+# Remove User from database
+async def remove_user(user_id):
+    try:
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
+        output = cursor.fetchall()
+        if output:
+            cursor.execute(f"DELETE FROM users WHERE user_id = {user_id}")
+            connection.commit()
+            connection.close()
+            print(f"{current_time()} - User removed with ID: {user_id}")
+            return "User removed"
+        else:
+            connection.close()
+            return "User unknown"
+    except:
+        return "Error"
+
+
+# Get user dict from database
+async def get_user_list(user_id):
+    try:
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
+        user_list = cursor.fetchall()[0]
+        connection.close()
+        return user_list
+    except:
+        return "Error"
+
+
+# Create profile embed
+async def create_profile_embed(ctx, self, user_list):
+    # Vars
+    user_dict = ast.literal_eval(user_list[1])
+    user_active_character = user_dict["Character"]
+
+    with open(f"{BOT_LOCATION[:-5]}data/Characters/{user_active_character}.txt", "r") as file:
+        character_data = file.read()
+        character_dict = ast.literal_eval(character_data)
+
+    # Embed
+    embed = discord.Embed(
+        color=discord.Colour.purple()
+    )
+
+    embed.set_author(
+        name=f"{ctx.author.name}'s Profile",
+        icon_url=ctx.author.avatar_url
+    )
+
+    embed.add_field(
+        name="Adventure Rank <:Adventure_Experience:803389956768661556>",
+        value=f"Level: {user_dict['Adventure Rank']}\n"
+              f"EXP: {user_dict['Adventure EXP']}/100",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Traveler",
+        value=user_active_character
+    )
+
+    embed.add_field(
+        name="Weapon",
+        value=user_dict["Characters"][user_active_character]["Weapon"]
+    )
+
+    stats_string = ""
+    character_level = user_dict["Characters"][user_active_character]["Level"]
+    for item in character_dict["Stats"][character_level]:
+            stats_string += f"{character_dict['Stats'][character_level][item]} - {item}\n"
+
+    embed.add_field(
+        name="Stats",
+        value=stats_string,
+        inline=False
+    )
+
+    artifacts_string = ""
+    for artifact in user_dict["Characters"][user_active_character]["Artifacts"]:
+        artifacts_string += f"{user_dict['Characters'][user_active_character]['Artifacts'][artifact]}\n"
+
+    embed.add_field(
+        name="Artifacts",
+        value=artifacts_string
+    )
+
+    embed.set_thumbnail(
+        url=character_dict['Thumbnail Link']
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name} by mvw#2203"
+    )
+
+    return embed
 
 
 # Create Travelers class
@@ -59,50 +160,25 @@ class Travelers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Create Traveler profile.
+    # Create User profile.
     @commands.command()
     async def appear(self, ctx):
-
         # Create user in database
-        output = create_user(ctx.author.id)
+        output = await create_user(ctx.author.id)
         await ctx.send(output)
 
-    # Show Traveler profile
+    # Remove User profile
+    @commands.command()
+    async def disappear(self, ctx):
+        # Remove user in database
+        output = await remove_user(ctx.author.id)
+        await ctx.send(output)
+
+    # Show User profile
     @commands.command()
     async def profile(self, ctx):
-
-        # Get user data from database
-        user_list = get_user_dict(ctx.author.id)
-        user_dict = ast.literal_eval(user_list[1])
-        user_status = user_list[2]
-
-        # Create user currency string
-        currency_string = ""
-        for currency in user_dict["currency"]:
-            currency_string += f"{currency} - {user_dict['currency'][currency]}\n"
-
-        # If user is new change embed
-        if user_status == "new":
-            embed = discord.Embed(
-                description="Below you can see your inventory. "
-                            "Here you can see your ingredients, materials, stats and currency. ",
-                color=discord.Colour.purple()
-            )
-        else:
-            embed = discord.Embed(
-                color=discord.Colour.purple()
-            )
-
-        embed.add_field(
-            name="Currency",
-            value=f"{currency_string}"
-        )
-
-        embed.set_author(
-            name=f"{ctx.author.name}'s Inventory",
-            icon_url=ctx.author.avatar_url
-        )
-
+        user_list = await get_user_list(ctx.author.id)
+        embed = await create_profile_embed(ctx, self, user_list)
         await ctx.send(embed=embed)
 
 

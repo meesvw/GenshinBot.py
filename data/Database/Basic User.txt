@@ -1,0 +1,7 @@
+{
+    "Adventure Rank": 1,
+    "Adventure EXP": 0,
+    "Characters": {},
+    "Character": "Traveler",
+    "Inventory": {}
+}

@@ -16,14 +16,20 @@ class Magazine(commands.Cog):
         )
 
         embed.add_field(
-            name="Commands",
-            value="`gi!help`"
+            name="Commands 💻",
+            value="`gi!help` < Allows you to see all the commands.\n`gi!guide`",
+            inline=False
         )
 
         embed.set_author(
             name=self.bot.user.name,
             icon_url=self.bot.user.avatar_url,
-            url="https://github.com/meesvw/GenshinBot.py"
+            url="https://github.com/meesvw/GenshinBot.py/"
+        )
+
+        embed.add_field(
+            name="Wiki 📖",
+            value="https://github.com/meesvw/GenshinBot.py/wiki"
         )
 
         embed.set_footer(
