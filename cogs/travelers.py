@@ -25,24 +25,39 @@ async def create_user(user_id):
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
         output = cursor.fetchall()
+
+        # Check if player exists
         if output:
             connection.close()
             return "User exists"
+
         else:
+            # Get basic user information
             with open(f"{BOT_LOCATION[:-5]}data/Database/Basic User.txt", "r") as file:
                 user_data = file.read()
                 user_dict = ast.literal_eval(user_data)
 
+            # Get basic Traveler information
             with open(f"{BOT_LOCATION[:-5]}data/Characters/Traveler.txt", "r") as file:
                 character_data = file.read()
                 character_dict = ast.literal_eval(character_data)
 
+            # Give user the Traveler as starting character
             user_dict["Characters"]["Traveler"] = {
                 "Artifacts": character_dict["Artifacts"],
                 "Weapon": character_dict["Weapon"],
-                "Level": 1
+                "Level": 1,
+                "EXP": 0
             }
 
+            # Give user the basic Dull Sword data
+            user_dict["Inventory"]["Weapons"]["Dull Blade"] = {
+                "EXP": 0,
+                "Level": 0,
+                "Ascension Level": 0
+            }
+
+            # Inserts the user data into the database
             cursor.execute("INSERT INTO users VALUES (:user_id, :user_dict, :status)",
                            {"user_id": user_id, "user_dict": f"{user_dict}", "status": "new"})
             connection.commit()
@@ -91,6 +106,7 @@ async def create_profile_embed(ctx, self, user_list):
     # Vars
     user_dict = ast.literal_eval(user_list[1])
     user_active_character = user_dict["Character"]
+    user_active_weapon = user_dict["Characters"][user_active_character]["Weapon"]
 
     with open(f"{BOT_LOCATION[:-5]}data/Characters/{user_active_character}.txt", "r") as file:
         character_data = file.read()
@@ -113,33 +129,38 @@ async def create_profile_embed(ctx, self, user_list):
         inline=False
     )
 
-    embed.add_field(
-        name="Traveler",
-        value=user_active_character
-    )
-
-    embed.add_field(
-        name="Weapon",
-        value=user_dict["Characters"][user_active_character]["Weapon"]
-    )
-
+    # Get Traveler stats
     stats_string = ""
     character_level = user_dict["Characters"][user_active_character]["Level"]
     for item in character_dict["Stats"][character_level]:
-            stats_string += f"{character_dict['Stats'][character_level][item]} - {item}\n"
+            stats_string += f"{item}: `{character_dict['Stats'][character_level][item]}`\n"
 
     embed.add_field(
-        name="Stats",
-        value=stats_string,
-        inline=False
+        name="Traveler <:PaimonIcon:804459171906846761>",
+        value=f"Name: `{user_active_character}`\n{stats_string}"
     )
 
+    # Get weapon stats
+    weapon_string = f"Name: `{user_active_weapon}`\n"
+    weapon_user_dict = user_dict["Inventory"]["Weapons"][user_active_weapon]
+    for item in weapon_user_dict:
+        if item == "EXP":
+            weapon_string += f"{item}: `{weapon_user_dict[item]}/100`\n"
+        else:
+            weapon_string += f"{item}: `{weapon_user_dict[item]}`\n"
+
+    embed.add_field(
+        name="Current Weapon :crossed_swords:",
+        value=weapon_string
+    )
+
+    # Get Traveler artifacts
     artifacts_string = ""
     for artifact in user_dict["Characters"][user_active_character]["Artifacts"]:
         artifacts_string += f"{user_dict['Characters'][user_active_character]['Artifacts'][artifact]}\n"
 
     embed.add_field(
-        name="Artifacts",
+        name="Artifacts <:Icon_Artifacts:804459458755035179>",
         value=artifacts_string
     )
 
@@ -148,7 +169,8 @@ async def create_profile_embed(ctx, self, user_list):
     )
 
     embed.set_footer(
-        text=f"{self.bot.user.name} by mvw#2203"
+        text=f"{self.bot.user.name} by mvw#2203",
+        icon_url=self.bot.user.avatar_url
     )
 
     return embed

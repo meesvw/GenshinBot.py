@@ -3,5 +3,12 @@
     "Adventure EXP": 0,
     "Characters": {},
     "Character": "Traveler",
-    "Inventory": {}
+    "Inventory": {
+        "Weapons": {},
+        "Materials": {
+            "Character Materials": {},
+            "Crafting Materials": {},
+            "Weapon Materials": {}
+        }
+    }
 }

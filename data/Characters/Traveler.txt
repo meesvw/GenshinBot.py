@@ -10,7 +10,7 @@
         "Flower": "Empty",
         "Plume": "Empty",
         "Watch": "Empty",
-        "Bottle": "Empty",
+        "Canister": "Empty",
         "Hat": "Empty"
     },
 

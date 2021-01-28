@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 BOT_PREFIX = os.getenv("BOT_PREFIX")
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
-COOKING_INGREDIENTS_LOCATION = f"{BOT_LOCATION[:-5]}data/Materials/Crafting Materials/Cooking Ingredients.txt"
+COOKING_INGREDIENTS_LOCATION = f"{BOT_LOCATION[:-5]}data/Items/Materials/Crafting Materials/Cooking Ingredients.txt"
 USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/Database/genshin.db"
 
 
@@ -36,7 +36,10 @@ class Kitchen(commands.Cog):
 
     # Let users cook
     @commands.command()
-    async def cook(self, ctx, food):
+    async def cook(self, ctx, *, food):
+        with open(f"{COOKING_INGREDIENTS_LOCATION}", "r") as file:
+            cooking_ingredients_data = file.read()
+            cooking_ingredients_dict = ast.literal_eval(cooking_ingredients_data)
 
         embed = discord.Embed(
             color=discord.Colour.purple()
@@ -52,21 +55,16 @@ class Kitchen(commands.Cog):
     # Shows recipe embed
     @commands.command()
     async def recipes(self, ctx):
-        with open(COOKING_INGREDIENTS_LOCATION, "r") as file:
-            ingredients_data = file.read()
-            ingredients_dict = ast.literal_eval(ingredients_data)
-
         embed = discord.Embed(
             title="Recipes <:Adeptus_Temptation:803029881419333632>",
-            description="Since there are so many recipes in Genshin Impact, "
-                        "I have decided to port them over to a wiki on which "
-                        "you can search for the specific foods.",
+            description="Genshin Impact has many recipes to learn and discover. "
+                        "To make cooking easy all recipes are listen on the wiki.",
             color=discord.Colour.purple()
         )
 
         embed.add_field(
             name="Usage 🔧",
-            value=f"To cook you simply use the following command:\n`{BOT_PREFIX}cook ItemName`",
+            value=f"To cook simply use: `{BOT_PREFIX}cook foodName`",
             inline=False
         )
 
