@@ -56,6 +56,7 @@ BOT_TOKEN=YourBotToken
 BOT_PREFIX=gi!
 DBL_ENABLED=False
 DBL_TOKEN=YourDBLToken
+DEBUG_MODE=False
 ```
 
 #### Running bot in the background

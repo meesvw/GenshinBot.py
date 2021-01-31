@@ -6,6 +6,7 @@ from datetime import datetime
 from discord.ext import commands
 
 # vars
+BOT_PREFIX = os.getenv("BOT_PREFIX")
 BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
 USERS_DATABASE = f"{BOT_LOCATION[:-5]}data/Database/genshin.db"
 
@@ -46,14 +47,15 @@ async def create_user(user_id):
             user_dict["Characters"]["Traveler"] = {
                 "Artifacts": character_dict["Artifacts"],
                 "Weapon": character_dict["Weapon"],
+                "EXP": 0,
                 "Level": 1,
-                "EXP": 0
+                "Ascension Level": 0
             }
 
-            # Give user the basic Dull Sword data
+            # Give user the basic Dull Sword in inventory
             user_dict["Inventory"]["Weapons"]["Dull Blade"] = {
                 "EXP": 0,
-                "Level": 0,
+                "Level": 1,
                 "Ascension Level": 0
             }
 
@@ -94,9 +96,12 @@ async def get_user_list(user_id):
         connection = sqlite3.connect(USERS_DATABASE)
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
-        user_list = cursor.fetchall()[0]
-        connection.close()
-        return user_list
+        user_list = cursor.fetchall()
+        if user_list:
+            connection.close()
+            return user_list[0]
+        else:
+            return "User unknown"
     except:
         return "Error"
 
@@ -124,20 +129,19 @@ async def create_profile_embed(ctx, self, user_list):
 
     embed.add_field(
         name="Adventure Rank <:Adventure_Experience:803389956768661556>",
-        value=f"Level: {user_dict['Adventure Rank']}\n"
-              f"EXP: {user_dict['Adventure EXP']}/100",
+        value=f"Level: `{user_dict['Adventure Rank']}`\n"
+              f"EXP: `{user_dict['Adventure EXP']}/100`",
         inline=False
     )
 
-    # Get Traveler stats
-    stats_string = ""
-    character_level = user_dict["Characters"][user_active_character]["Level"]
-    for item in character_dict["Stats"][character_level]:
-            stats_string += f"{item}: `{character_dict['Stats'][character_level][item]}`\n"
+    # Get Traveler level
+    traveler_exp = user_dict["Characters"][user_active_character]["EXP"]
+    traveler_level = user_dict["Characters"][user_active_character]["Level"]
+    traveler_ascension_level = user_dict["Characters"][user_active_character]["Ascension Level"]
 
     embed.add_field(
         name="Traveler <:PaimonIcon:804459171906846761>",
-        value=f"Name: `{user_active_character}`\n{stats_string}"
+        value=f"Name: `{user_active_character}`\nEXP: `{traveler_exp}/100`\nLevel: `{traveler_level}`\nAscension Level: `{traveler_ascension_level}`"
     )
 
     # Get weapon stats
@@ -157,7 +161,7 @@ async def create_profile_embed(ctx, self, user_list):
     # Get Traveler artifacts
     artifacts_string = ""
     for artifact in user_dict["Characters"][user_active_character]["Artifacts"]:
-        artifacts_string += f"{user_dict['Characters'][user_active_character]['Artifacts'][artifact]}\n"
+        artifacts_string += f"`{user_dict['Characters'][user_active_character]['Artifacts'][artifact]}`\n"
 
     embed.add_field(
         name="Artifacts <:Icon_Artifacts:804459458755035179>",
@@ -166,6 +170,47 @@ async def create_profile_embed(ctx, self, user_list):
 
     embed.set_thumbnail(
         url=character_dict['Thumbnail Link']
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name} by mvw#2203",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
+# Create User unknown embed
+async def create_user_unknown_embed(ctx, self):
+    embed = discord.Embed(
+        description=f"It looks like you don't have a profile yet.\n"
+                    f"Use: `{BOT_PREFIX}appear` to create a profile.",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_author(
+        name=f"Hey {ctx.author.name}",
+        icon_url=ctx.author.avatar_url
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name} by mvw#2203",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
+# Create Error embed
+async def create_error_embed(ctx, self):
+    embed = discord.Embed(
+        description=f"Something went wrong! Please try again.",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_author(
+        name=f"Hey {ctx.author.name}",
+        icon_url=ctx.author.avatar_url
     )
 
     embed.set_footer(
@@ -200,8 +245,15 @@ class Travelers(commands.Cog):
     @commands.command()
     async def profile(self, ctx):
         user_list = await get_user_list(ctx.author.id)
-        embed = await create_profile_embed(ctx, self, user_list)
-        await ctx.send(embed=embed)
+        if user_list == "User unknown":
+            embed = await create_user_unknown_embed(ctx, self)
+            return await ctx.send(embed=embed)
+        if user_list == "Error":
+            embed = await create_error_embed(ctx, self)
+            return await ctx.send(embed=embed)
+        else:
+            embed = await create_profile_embed(ctx, self, user_list)
+            await ctx.send(embed=embed)
 
 
 # Setup cog

@@ -14,7 +14,9 @@
             "Multiplier": 1.7,
             "Max Level": 40,
             "Required Level": 20,
-            "Mora": 0,
+            "Upgrade Currency": {
+                "Mora": 0
+            },
             "Ascension Material": {
                 "Tile of Decarabians Tower": 1,
                 "Heavy Horn": 1,
@@ -27,7 +29,9 @@
             "Multiplier": 0.85,
             "Max Level": 50,
             "Required Level": 40,
-            "Mora": 5000,
+            "Upgrade Currency": {
+                "Mora": 5000
+            },
             "Ascension Material": {
                 "Debris of Decarabians City": 1,
                 "Heavy Horn": 4,
@@ -40,7 +44,9 @@
             "Multiplier": 0.85,
             "Max Level": 60,
             "Required Level": 50,
-            "Mora": 5000,
+            "Upgrade Currency": {
+                "Mora": 5000
+            },
             "Ascension Material": {
                 "Debris of Decarabians City": 2,
                 "Black Bronze Horn": 2,
@@ -53,7 +59,9 @@
             "Multiplier": 0.8,
             "Max Level": 70,
             "Required Level": 60,
-            "Mora": 10000,
+            "Upgrade Currency": {
+                "Mora": 10000
+            },
             "Ascension Material": {
                 "Fragment of Decarabians Epic": 1,
                 "Black Bronze Horn": 4,

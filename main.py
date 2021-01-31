@@ -14,6 +14,7 @@ BOT_LOCATION = f"{os.path.dirname(os.path.abspath(__file__))}/"
 USERS_DATABASE = f"{BOT_LOCATION}data/Database/genshin.db"
 DBL_ENABLED = os.getenv("DBL_ENABLED")
 DBL_TOKEN = os.getenv("DBL_TOKEN")
+DEBUG_MODE = os.getenv("DEBUG_MODE")
 bot = commands.AutoShardedBot(command_prefix=BOT_PREFIX, case_insensitive=True)
 
 
@@ -115,7 +116,7 @@ if os.path.exists(f"{BOT_LOCATION}.env"):
         print(f"{current_time()} - Warning TopGG has not been configured.")
 else:
     with open(f"{BOT_LOCATION}.env", "w") as file:
-        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=gi!\nDBL_ENABLED=False\nDBL_TOKEN=YourDBLToken")
+        file.write("BOT_TOKEN=YourBotToken\nBOT_PREFIX=gi!\nDBL_ENABLED=False\nDBL_TOKEN=YourDBLToken\nDEBUG_MODE=False")
         print(f"{current_time()} - Created .env file.")
     print(f"{current_time()} - Please configure the .env file before starting.")
     quit()
@@ -133,7 +134,8 @@ try:
     connection.close()
     print(f"{current_time()} - Database has been created.")
 except sqlite3.OperationalError:
-    print(f"{current_time()} - Database found skipping creation.")
+    if DEBUG_MODE == "True":
+        print(f"{current_time()} - Database found skipping creation.")
 
 # Load cogs
 for file in os.listdir(f"{BOT_LOCATION}cogs"):
@@ -142,7 +144,8 @@ for file in os.listdir(f"{BOT_LOCATION}cogs"):
     elif file.endswith(".py"):
         try:
             bot.load_extension(f"cogs.{file[:-3]}")
-            print(f"{current_time()} - Loaded extension: {file[:-3]}")
+            if DEBUG_MODE == "True":
+                print(f"{current_time()} - Loaded extension: {file[:-3]}")
         except:
             print(f"{current_time()} - Error occured loading: {file[:-3]}")
 

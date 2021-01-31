@@ -14,19 +14,150 @@
         "Hat": "Empty"
     },
 
-    "Stats": {
-        1: {
-            "HP": 912,
-            "ATK1": 18,
-            "DEF": 57,
-            "ATK2": 0
+    "Ascension Phase": {
+        0: {
+            "Max Level": 20,
+            "Stats": {
+                "HP": 912,
+                "ATK1": 18,
+                "DEF": 57,
+                "ATK2": 0,
+                "*HP": 71.5,
+                "*ATK1": 1.4,
+                "*DEF": 4.5
+            }
         },
-        2: {
-            "HP": 912,
-            "ATK1": 18,
-            "DEF": 57,
-            "ATK2": 0
-        }
-    }
-}
 
+        1: {
+            "Max Level": 40,
+            "Required Level": 20,
+            "Stats": {
+                "HP": 3024,
+                "ATK1": 59,
+                "DEF": 190,
+                "ATK2": 0,
+                "*HP": 75.25,
+                "*ATK1": 1.45,
+                "*DEF": 4.7
+            },
+            "Upgrade Currency": {
+                "Mora": 20000
+            },
+            "Ascension Material": {
+                "Brilliant Diamond Silver": 1,
+                "Windwheel Aster": 3,
+                "Damaged Mask": 3
+            }
+        },
+
+        2: {
+            "Max Level": 50,
+            "Required Level": 40,
+            "Stats": {
+                "HP": 5013,
+                "ATK1": 98,
+                "DEF": 315,
+                "ATK2": 6,
+                "*HP": 37.65,
+                "*ATK1": 0.75,
+                "*DEF": 2.35
+            },
+            "Upgrade Currency": {
+                "Mora": 40000
+            },
+            "Ascension Material": {
+                "Brilliant Diamond Fragment": 3,
+                "Windwheel Aster": 10,
+                "Damaged Mask": 15
+            }
+        },
+
+        3: {
+            "Max Level": 60,
+            "Required Level": 50,
+            "Stats": {
+                "HP": 6411,
+                "ATK1": 125,
+                "DEF": 405,
+                "ATK2": 12,
+                "*HP": 37.65,
+                "*ATK1": 0.75,
+                "*DEF": 2.25
+            },
+            "Upgrade Currency": {
+                "Mora": 60000
+            },
+            "Ascension Material": {
+                "Brilliant Diamond Fragment": 6,
+                "Windwheel Aster": 20,
+                "Stained Mask": 12
+            }
+        },
+
+        4: {
+            "Max Level": 70,
+            "Required Level": 60,
+            "Stats": {
+                "HP": 7648,
+                "ATK1": 149,
+                "DEF": 480,
+                "ATK2": 12,
+                "*HP": 37.65,
+                "*ATK1": 0.75,
+                "*DEF": 2.35
+            },
+            "Upgrade Currency": {
+                "Mora": 80000
+            },
+            "Ascension Material": {
+                "Brilliant Diamon Chunk": 3,
+                "Windwheel Aster": 30,
+                "Stained Mask": 18
+            }
+        },
+
+        5: {
+            "Max Level": 80,
+            "Required Level": 70,
+            "Stats": {
+                "HP": 8885,
+                "ATK1": 174,
+                "DEF": 558,
+                "ATK2": 18,
+                "*HP": 37.65,
+                "*ATK1": 0.7,
+                "*DEF": 2.35
+            },
+            "Upgrade Currency": {
+                "Mora": 100000
+            },
+            "Ascension Material": {
+                "Brilliant Diamon Chunk": 6,
+                "Windwheel Aster": 45,
+                "Omnious Mask": 12
+            }
+        },
+
+        6: {
+            "Max Level": 90,
+            "Required Level": 80,
+            "Stats": {
+                "HP": 10122,
+                "ATK1": 198,
+                "DEF": 635,
+                "ATK2": 24,
+                "*HP": 37.65,
+                "*ATK1": 0.7,
+                "*DEF": 2.4
+            },
+            "Upgrade Currency": {
+                "Mora": 120000
+            },
+            "Ascension Material": {
+                "Brilliant Diamond Gemstone": 6,
+                "Windwheel Aster": 60,
+                "Omnious Mask": 24
+            }
+        }
+    },
+}

@@ -9,6 +9,11 @@
             "Character Materials": {},
             "Crafting Materials": {},
             "Weapon Materials": {}
-        }
+        },
+        "Food": {}
+    },
+    "Missions": {
+        "Completed": [],
+        "Active": []
     }
 }
