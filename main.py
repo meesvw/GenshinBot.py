@@ -28,7 +28,7 @@ def current_time():
 
 # Set Bot status
 async def set_status():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f"Teyvat | {BOT_PREFIX}help"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f"Teyvat | {BOT_PREFIX}guide"))
 
 
 # Bot commands

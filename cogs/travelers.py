@@ -39,12 +39,12 @@ async def create_user(user_id):
                 user_dict = ast.literal_eval(user_data)
 
             # Get basic Traveler information
-            with open(f"{BOT_LOCATION[:-5]}data/Characters/Traveler.txt", "r") as file:
+            with open(f"{BOT_LOCATION[:-5]}data/Travelers/Traveler.txt", "r") as file:
                 character_data = file.read()
                 character_dict = ast.literal_eval(character_data)
 
             # Give user the Traveler as starting character
-            user_dict["Characters"]["Traveler"] = {
+            user_dict["Travelers"]["Traveler"] = {
                 "Artifacts": character_dict["Artifacts"],
                 "Weapon": character_dict["Weapon"],
                 "EXP": 0,
@@ -56,7 +56,8 @@ async def create_user(user_id):
             user_dict["Inventory"]["Weapons"]["Dull Blade"] = {
                 "EXP": 0,
                 "Level": 1,
-                "Ascension Level": 0
+                "Ascension Level": 0,
+                "Weapon Type": "Sword"
             }
 
             # Inserts the user data into the database
@@ -107,15 +108,22 @@ async def get_user_list(user_id):
 
 
 # Create profile embed
-async def create_profile_embed(ctx, self, user_list):
+async def create_profile_embed(self, ctx, user_list):
     # Vars
     user_dict = ast.literal_eval(user_list[1])
-    user_active_character = user_dict["Character"]
-    user_active_weapon = user_dict["Characters"][user_active_character]["Weapon"]
+    user_active_character = user_dict["Traveler"]
+    user_active_weapon = user_dict["Travelers"][user_active_character]["Weapon"]
+    weapon_user_dict = user_dict["Inventory"]["Weapons"][user_active_weapon]
 
-    with open(f"{BOT_LOCATION[:-5]}data/Characters/{user_active_character}.txt", "r") as file:
+    # Get Travel dict
+    with open(f"{BOT_LOCATION[:-5]}data/Travelers/{user_active_character}.txt", "r") as file:
         character_data = file.read()
         character_dict = ast.literal_eval(character_data)
+
+    # Get Weapon dict
+    with open(f"{BOT_LOCATION[:-5]}data/Items/Weapons/{weapon_user_dict['Weapon Type']}/{user_active_weapon}.txt", "r") as file:
+        weapon_data = file.read()
+        weapon_dict = ast.literal_eval(weapon_data)
 
     # Embed
     embed = discord.Embed(
@@ -135,9 +143,9 @@ async def create_profile_embed(ctx, self, user_list):
     )
 
     # Get Traveler level
-    traveler_exp = user_dict["Characters"][user_active_character]["EXP"]
-    traveler_level = user_dict["Characters"][user_active_character]["Level"]
-    traveler_ascension_level = user_dict["Characters"][user_active_character]["Ascension Level"]
+    traveler_exp = user_dict["Travelers"][user_active_character]["EXP"]
+    traveler_level = user_dict["Travelers"][user_active_character]["Level"]
+    traveler_ascension_level = user_dict["Travelers"][user_active_character]["Ascension Level"]
 
     embed.add_field(
         name="Traveler <:PaimonIcon:804459171906846761>",
@@ -146,7 +154,6 @@ async def create_profile_embed(ctx, self, user_list):
 
     # Get weapon stats
     weapon_string = f"Name: `{user_active_weapon}`\n"
-    weapon_user_dict = user_dict["Inventory"]["Weapons"][user_active_weapon]
     for item in weapon_user_dict:
         if item == "EXP":
             weapon_string += f"{item}: `{weapon_user_dict[item]}/100`\n"
@@ -154,18 +161,8 @@ async def create_profile_embed(ctx, self, user_list):
             weapon_string += f"{item}: `{weapon_user_dict[item]}`\n"
 
     embed.add_field(
-        name="Current Weapon :crossed_swords:",
+        name=f"Current Weapon {weapon_dict['discord_emoji']}",
         value=weapon_string
-    )
-
-    # Get Traveler artifacts
-    artifacts_string = ""
-    for artifact in user_dict["Characters"][user_active_character]["Artifacts"]:
-        artifacts_string += f"`{user_dict['Characters'][user_active_character]['Artifacts'][artifact]}`\n"
-
-    embed.add_field(
-        name="Artifacts <:Icon_Artifacts:804459458755035179>",
-        value=artifacts_string
     )
 
     embed.set_thumbnail(
@@ -173,7 +170,7 @@ async def create_profile_embed(ctx, self, user_list):
     )
 
     embed.set_footer(
-        text=f"{self.bot.user.name} by mvw#2203",
+        text=f"{self.bot.user.name}",
         icon_url=self.bot.user.avatar_url
     )
 
@@ -181,7 +178,7 @@ async def create_profile_embed(ctx, self, user_list):
 
 
 # Create User unknown embed
-async def create_user_unknown_embed(ctx, self):
+async def create_user_unknown_embed(self, ctx):
     embed = discord.Embed(
         description=f"It looks like you don't have a profile yet.\n"
                     f"Use: `{BOT_PREFIX}appear` to create a profile.",
@@ -202,7 +199,7 @@ async def create_user_unknown_embed(ctx, self):
 
 
 # Create Error embed
-async def create_error_embed(ctx, self):
+async def create_error_embed(self, ctx):
     embed = discord.Embed(
         description=f"Something went wrong! Please try again.",
         color=discord.Colour.purple()
@@ -214,7 +211,44 @@ async def create_error_embed(ctx, self):
     )
 
     embed.set_footer(
-        text=f"{self.bot.user.name} by mvw#2203",
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
+# Create Unknown option embed
+async def create_unknown_option_embed(self, ctx, command, option):
+    embed = discord.Embed(
+        title=f"Unkown option: `{option}`",
+        description="Maybe you misspelled something?",
+        color=discord.Colour.purple()
+    )
+
+    if command == "inventory":
+        embed.add_field(
+            name=f"`{BOT_PREFIX}{command}` description:",
+            value="The inventory command allows you to see your items.\n"
+                  "This only shows what you own!",
+            inline=False
+        )
+
+        embed.add_field(
+            name=f"command usage:",
+            value=f"- `{BOT_PREFIX}{command} option`",
+            inline=False
+        )
+
+        embed.add_field(
+            name=f"options:",
+            value="- Cooking Ingredients\n"
+                  "- Weapons\n"
+                  "- Food"
+        )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
         icon_url=self.bot.user.avatar_url
     )
 
@@ -246,14 +280,29 @@ class Travelers(commands.Cog):
     async def profile(self, ctx):
         user_list = await get_user_list(ctx.author.id)
         if user_list == "User unknown":
-            embed = await create_user_unknown_embed(ctx, self)
+            embed = await create_user_unknown_embed(self, ctx)
             return await ctx.send(embed=embed)
         if user_list == "Error":
-            embed = await create_error_embed(ctx, self)
+            embed = await create_error_embed(self, ctx)
             return await ctx.send(embed=embed)
         else:
-            embed = await create_profile_embed(ctx, self, user_list)
+            embed = await create_profile_embed(self, ctx, user_list)
             await ctx.send(embed=embed)
+
+    # Show User Inventory
+    @commands.command()
+    async def inventory(self, ctx, *, option):
+        option = option.lower()
+        command = "inventory"
+        if option == "cooking ingredients":
+            return await ctx.send()
+        if option == "food":
+            return await ctx.send()
+        if option == "weapons":
+            return await ctx.send()
+        else:
+            embed = await create_unknown_option_embed(self, ctx, command, option)
+            return await ctx.send(embed=embed)
 
 
 # Setup cog
