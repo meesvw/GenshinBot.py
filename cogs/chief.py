@@ -37,8 +37,80 @@ async def get_user_dict(user_id):
 
 
 # Insert user dict into database
-async def insert_user_dict(user_id, user_dict):
-    return
+async def insert_user_dict(user_id, category, item, amount):
+    # Get user list from database
+    user_list = await get_user_dict(user_id)
+
+    # Check if user exists or something went wrong
+    if user_list == "User unknown":
+        return "User unkown"
+    if user_list == "Error":
+        return "Error"
+
+    # Set user dict
+    user_dict = user_list[1]
+    user_dict = ast.literal_eval(user_dict)
+
+    # Check category
+    if category == "Cooking Ingredients":
+        try:
+            old_item_amount = user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"][item]
+            user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"][item] = amount + old_item_amount
+        except KeyError:
+            user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"][item] = amount
+
+    # Put user_dict into database
+    try:
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET user_dict = :user_dict WHERE user_id = :user_id;",
+                       {"user_dict": f"{user_dict}", "user_id": user_id})
+        connection.commit()
+        connection.close()
+        return "User updated"
+    except:
+        return "Error"
+
+
+# Create User unknown embed
+async def create_user_unknown_embed(self, ctx):
+    embed = discord.Embed(
+        description=f"It looks like you don't have a profile yet.\n"
+                    f"Use: `{BOT_PREFIX}appear` to create a profile.",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_author(
+        name=f"Hey {ctx.author.name}",
+        icon_url=ctx.author.avatar_url
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
+# Create Error embed
+async def create_error_embed(self, ctx):
+    embed = discord.Embed(
+        description=f"Something went wrong! Please try again.",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_author(
+        name=f"Hey {ctx.author.name}",
+        icon_url=ctx.author.avatar_url
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
 
 
 # Create Travelers class
@@ -70,11 +142,22 @@ class Chief(commands.Cog):
                 items_data = file.read()
                 items_dict = ast.literal_eval(items_data)
 
+            # Check if item exists
             try:
                 item_dict = items_dict[item]
-                return await ctx.send(f"`{amount}x {item}` added to `{user.name}`.")
             except KeyError:
                 return await ctx.send(f"`{item}` is not a item.")
+
+            # Check output
+            output = await insert_user_dict(user.id, category, item, amount)
+            if output == "User unknown":
+                embed = await create_user_unknown_embed(self, ctx)
+                return await ctx.send(embed=embed)
+            if output == "Error":
+                embed = await create_error_embed(self, ctx)
+                return await ctx.send(embed=embed)
+
+            return await ctx.send(f"`{amount}x {item}` added to `{user.name}`.")
 
         # Check if category is food
         if category == "Food":

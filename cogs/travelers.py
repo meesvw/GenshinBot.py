@@ -1,4 +1,5 @@
 import ast
+import asyncio
 import discord
 import os
 import sqlite3
@@ -107,6 +108,45 @@ async def get_user_list(user_id):
         return "Error"
 
 
+# Create appear embed1
+async def create_appear_embed1(self, ctx):
+    embed = discord.Embed(
+        title="A new Traveler is appearing...",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_image(
+        url="https://media0.giphy.com/media/uLhgTakWbcz1z4tTfp/giphy.gif"
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
+# Create appear embed2
+async def create_appear_embed2(self, ctx):
+    embed = discord.Embed(
+        title=f"Welcome to Teyvat {ctx.author.name}",
+        description="Use `gi!guide` to start your adventure!",
+        color=discord.Colour.purple()
+    )
+
+    embed.set_image(
+        url="https://wallegend.net/gif/1465.gif"
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
 # Create profile embed
 async def create_profile_embed(self, ctx, user_list):
     # Vars
@@ -138,8 +178,7 @@ async def create_profile_embed(self, ctx, user_list):
     embed.add_field(
         name="Adventure Rank <:Adventure_Experience:803389956768661556>",
         value=f"Level: `{user_dict['Adventure Rank']}`\n"
-              f"EXP: `{user_dict['Adventure EXP']}/100`",
-        inline=False
+              f"EXP: `{user_dict['Adventure EXP']}/100`"
     )
 
     # Get Traveler level
@@ -148,7 +187,7 @@ async def create_profile_embed(self, ctx, user_list):
     traveler_ascension_level = user_dict["Travelers"][user_active_character]["Ascension Level"]
 
     embed.add_field(
-        name="Traveler <:PaimonIcon:804459171906846761>",
+        name="Traveler",
         value=f"Name: `{user_active_character}`\nEXP: `{traveler_exp}/100`\nLevel: `{traveler_level}`\nAscension Level: `{traveler_ascension_level}`"
     )
 
@@ -177,6 +216,43 @@ async def create_profile_embed(self, ctx, user_list):
     return embed
 
 
+# Create inventory embed
+async def create_inventory_embed(self, ctx, option, user_items_dict):
+    # Check option
+    if option == "Cooking Ingredients":
+        with open(f"{BOT_LOCATION[:-5]}data/Items/Materials/Crafting Materials/Cooking Ingredients.txt", "r") as file:
+            cooking_ingredients_data = file.read()
+            cooking_ingredients_dict = ast.literal_eval(cooking_ingredients_data)
+
+    embed = discord.Embed(
+        color=discord.Colour.purple()
+    )
+
+    if user_items_dict:
+        item_string = ""
+        for item in user_items_dict:
+            item_string += f"-{cooking_ingredients_dict[item]['discord_emoji']} `{user_items_dict[item]}x` ({item})\n"
+    else:
+        item_string = "`Looks pretty empty here..` 🧹"
+
+    embed.add_field(
+        name=option,
+        value=item_string
+    )
+
+    embed.set_author(
+        name=f"{ctx.author.name}'s Inventory",
+        icon_url=ctx.author.avatar_url
+    )
+
+    embed.set_footer(
+        text=f"{self.bot.user.name}",
+        icon_url=self.bot.user.avatar_url
+    )
+
+    return embed
+
+
 # Create User unknown embed
 async def create_user_unknown_embed(self, ctx):
     embed = discord.Embed(
@@ -191,7 +267,7 @@ async def create_user_unknown_embed(self, ctx):
     )
 
     embed.set_footer(
-        text=f"{self.bot.user.name} by mvw#2203",
+        text=f"{self.bot.user.name}",
         icon_url=self.bot.user.avatar_url
     )
 
@@ -266,7 +342,22 @@ class Travelers(commands.Cog):
     async def appear(self, ctx):
         # Create user in database
         output = await create_user(ctx.author.id)
-        await ctx.send(output)
+
+        # Check output
+        if output == "Error":
+            embed = await create_error_embed(self, ctx)
+            return await ctx.send(embed=embed)
+
+        if output == "User exists":
+            await ctx.message.delete()
+
+        if output == "User created":
+            embed = await create_appear_embed1(self, ctx)
+            message = await ctx.send(embed=embed)
+            await asyncio.sleep(6.1)
+            await message.edit(content=f"{ctx.author.mention}")
+            embed = await create_appear_embed2(self, ctx)
+            await message.edit(embed=embed)
 
     # Remove User profile
     @commands.command()
@@ -290,15 +381,21 @@ class Travelers(commands.Cog):
             await ctx.send(embed=embed)
 
     # Show User Inventory
-    @commands.command()
+    @commands.command(aliases=["inv"])
     async def inventory(self, ctx, *, option):
-        option = option.lower()
+        # Vars
+        option = option.title()
         command = "inventory"
-        if option == "cooking ingredients":
+        user_list = await get_user_list(ctx.author.id)
+
+        if option == "Cooking Ingredients":
+            user_dict = ast.literal_eval(user_list[1])
+            user_items_dict = user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"]
+            embed = await create_inventory_embed(self, ctx, option, user_items_dict)
+            return await ctx.send(embed=embed)
+        if option == "Food":
             return await ctx.send()
-        if option == "food":
-            return await ctx.send()
-        if option == "weapons":
+        if option == "Weapons":
             return await ctx.send()
         else:
             embed = await create_unknown_option_embed(self, ctx, command, option)

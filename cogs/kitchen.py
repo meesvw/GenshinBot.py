@@ -35,16 +35,77 @@ async def get_user_list(user_id):
         return "Error"
 
 
-# Check if User has the needed ingredients
-async def check_user_ingredients(user_dict, needed_ingredients_dict):
-    user_ingredients_dict = user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"]
+# Update user dict in database
+async def update_user_dict(user_id, user_dict):
     try:
-        for item in needed_ingredients_dict:
-            result = needed_ingredients_dict[item]-user_ingredients_dict[item]
-            if result < 0:
-                return "Missing Amount Cooking Ingredients"
+        connection = sqlite3.connect(USERS_DATABASE)
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET user_dict = :user_dict WHERE user_id = :user_id;",
+                       {"user_dict": f"{user_dict}", "user_id": user_id})
+        connection.commit()
+        connection.close()
+        return "User updated"
+    except:
+        return "Error"
+
+
+# Clean user dict from empty items
+async def clean_user_dict(user_dict):
+    temp_list = []
+    for item in user_dict:
+        if user_dict[item] == 0:
+            temp_list.append(item)
+
+    for item in temp_list:
+        user_dict.pop(item)
+
+    return user_dict
+
+
+# Check if User has the needed ingredients
+async def update_user_ingredients(self, ctx, amount, user_dict, needed_ingredients_dict):
+    # Get users ingredients
+    user_ingredients_dict = user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"]
+    # Check if user has the cooking ingredients
+    try:
+        for i in range(amount):
+            for item in needed_ingredients_dict:
+                user_ingredients_dict[item] = user_ingredients_dict[item]-needed_ingredients_dict[item]
+
+                # Check if user has enough cooking ingredients
+                if user_ingredients_dict[item] < 0:
+                    return await create_missing_cooking_embed(self, ctx, user_ingredients_dict, needed_ingredients_dict)
+
+        # Check if update was successful
+        user_ingredients_dict = await clean_user_dict(user_ingredients_dict)
+        user_dict["Inventory"]["Materials"]["Crafting Materials"]["Cooking Ingredients"] = user_ingredients_dict
+        output = await update_user_dict(ctx.author.id, user_dict)
+        if output == "User updated":
+            return await create_successful_cooking_embed(self, ctx, needed_ingredients_dict)
+        if output == "Error":
+            return await create_error_embed(self, ctx)
     except KeyError:
-        return "Missing Cooking Ingredients"
+        return await create_missing_cooking_embed(self, ctx, user_ingredients_dict, needed_ingredients_dict)
+
+
+# Create successful cooking embed
+async def create_successful_cooking_embed(self, ctx, needed_ingredients_dict):
+    embed = discord.Embed(
+        title="Successful",
+        color=discord.Colour.purple()
+    )
+
+    return embed
+
+
+# Create missing cooking embed
+async def create_missing_cooking_embed(self, ctx, user_ingredients_dict, needed_ingredients_dict):
+    embed = discord.Embed(
+        title="Missing Ingredients",
+        color=discord.Colour.purple()
+    )
+
+    return embed
 
 
 # Create User unknown embed
@@ -118,7 +179,7 @@ class Kitchen(commands.Cog):
 
     # Let users cook
     @commands.command()
-    async def cook(self, ctx, *, food):
+    async def cook(self, ctx, amount, *, food):
         # Check if user exists or error occurred
         user_dict = await get_user_list(ctx.author.id)
         if user_dict == "User unknown":
@@ -127,6 +188,12 @@ class Kitchen(commands.Cog):
         if user_dict == "Error":
             embed = await create_error_embed(self, ctx)
             return await ctx.send(embed=embed)
+
+        # Check if amount is number
+        try:
+            amount = int(amount)
+        except ValueError:
+            return await ctx.send(f"{amount} needs to be a number.")
 
         # Set User Dict
         user_dict = ast.literal_eval(user_dict[1])
@@ -160,7 +227,9 @@ class Kitchen(commands.Cog):
             embed = await create_unknown_food_embed(self, ctx, food)
             return await ctx.send(embed=embed)
 
-        await check_user_ingredients(user_dict, cooking_ingredients_dict)
+        # Create Embed
+        embed = await update_user_ingredients(self, ctx, amount, user_dict, needed_ingredients_dict)
+        await ctx.send(embed=embed)
 
     # Shows recipe embed
     @commands.command()

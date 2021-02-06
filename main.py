@@ -39,6 +39,7 @@ async def set_status():
 async def load(ctx, extension):
     bot.load_extension(f"cogs.{extension}")
     print(f"{current_time()} - Loaded extension: {extension}")
+    return await ctx.send(f"`Loaded extension: {extension}`")
 
 
 # Unload specific cog
@@ -47,6 +48,7 @@ async def load(ctx, extension):
 async def unload(ctx, extension):
     bot.unload_extension(f"cogs.{extension}")
     print(f"{current_time()} - Unloaded extension: {extension}")
+    return await ctx.send(f"`Unloaded extension: {extension}`")
 
 
 # Reload specific cog
@@ -56,6 +58,7 @@ async def reload(ctx, extension):
     bot.unload_extension(f"cogs.{extension}")
     bot.load_extension(f"cogs.{extension}")
     print(f"{current_time()} - Reloaded extension: {extension}")
+    return await ctx.send(f"`Reloaded extension: {extension}`")
 
 
 # Update all cogs
@@ -74,6 +77,7 @@ async def update(ctx):
                 error_amount += 1
                 print(f"{current_time()} - Error updating extension: {file[:-3]}")
     print(f"{current_time()} - Updated extensions errors: {error_amount}.")
+    return await ctx.send(f"`Updated extensions errors: {error_amount}`")
 
 
 # Bot events

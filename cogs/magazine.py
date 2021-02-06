@@ -18,27 +18,22 @@ class Magazine(commands.Cog):
     @commands.command()
     async def guide(self, ctx):
         embed = discord.Embed(
+            title="Guide 📚",
+            description="GenshinBot has a lot of commands and different usages. To help you out we've made a wiki. "
+                  "Here you can find all the information you need.\n\n"
+                  f"To see all the commands: `{BOT_PREFIX}help`",
             color=discord.Colour.purple()
         )
 
         embed.add_field(
-            name="Summary",
-            value="GenshinBot has a lot of commands. So much that I can't list them all in one Embed. "
-                  "Please visit the wiki for the full documentation. "
-                  "Almost all cooking and crafting recipes are the same as in game.\n\n"
-                  f"Basic command list: `{BOT_PREFIX}help`",
+            name="Wiki 📖",
+            value="https://github.com/meesvw/GenshinBot.py/wiki",
             inline=False
         )
 
-        embed.set_author(
-            name=self.bot.user.name,
-            icon_url=self.bot.user.avatar_url,
-            url="https://github.com/meesvw/GenshinBot.py/"
-        )
-
         embed.add_field(
-            name="Wiki 📖",
-            value="https://github.com/meesvw/GenshinBot.py/wiki"
+            name="More questions?",
+            value="Visit the official Discord server:\nhttps://discord.gg/8GMKZTT22n"
         )
 
         embed.set_footer(
