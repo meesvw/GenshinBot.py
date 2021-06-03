@@ -5,7 +5,7 @@
 Please go to the [official wiki](https://github.com/meesvw/GenshinBot.py/wiki) for the full documentation.
 
 ### Running the Bot
-To install and run the Bot, please visit [this page](https://github.com/meesvw/GenshinBot.py/wiki/Run-the-Bot).
+Message me to get access to the repo.
 
 ## Support me
 
