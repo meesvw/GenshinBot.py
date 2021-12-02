@@ -8,5 +8,4 @@ Please go to the [official wiki](https://github.com/meesvw/GenshinBot.py/wiki) f
 Being worked on.
 
 ## Support me
-
 Coming soon.
