@@ -23,6 +23,9 @@ For the time being you will still need aiohttp and requests, but I will most def
 - Trading system (trade your duplicated weapons or items with other players)
 - Customizable quests for your server
 
+### Currently working on
+> Database function to gather and insert information about travelers, enemies and items.
+
 ## Requirements
 - Discord bot token ([Guide](https://discordpy.readthedocs.io/en/stable/discord.html))
 - Python^3.8 ([Download](https://www.python.org/downloads/))
