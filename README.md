@@ -12,6 +12,7 @@ For the time being you will still need aiohttp and requests, but I will most def
   - travelers
   - enemies
   - items
+  - events
 - Callable classes (For example Traveler, Enemy, Item)
 
 ### Plans for the future (More will come)
